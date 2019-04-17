@@ -4,6 +4,8 @@ import { Model } from 'mongoose';
 import { LoginDto } from 'src/controller/user/dto/login.dto';
 import { User } from '../../controller/user/interface/user.interface';
 import { UserCreateDto } from 'src/controller/user/dto/user-create.dto';
+import * as jwt from 'jsonwebtoken';
+import { SECRET_KEY } from './../constant/value';
 @Injectable()
 export class UserService {
     constructor(
@@ -53,5 +55,15 @@ export class UserService {
                 }
             })
         })
+    }
+
+    createToken(username) {
+        const accessToken = jwt.sign({
+            username: username,
+            datetime: new Date(),
+            random: Math.random()
+        } , SECRET_KEY);
+
+        return accessToken;
     }
 }

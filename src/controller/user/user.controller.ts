@@ -70,11 +70,13 @@ export class UserController {
     @UsePipes(new ValidationPipe())
     async login(@Body() login: LoginDto) {
         try {
-            let data = await this.userSvc.checkUser(login);
+            let data: any = await this.userSvc.checkUser(login);
+            let token = await this.userSvc.createToken(data.username);
             if (data !== null) {
                 return {
                     status: HttpStatus.OK,
-                    data: data
+                    data: data,
+                    access_token: token
                 }
             } else {
                 return {
