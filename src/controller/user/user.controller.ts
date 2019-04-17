@@ -11,18 +11,42 @@ import { NOT_FOUND_ACCOUNT, ACCOUNT_EXIST } from './../../share/constant/message
 export class UserController {
     constructor(
         private readonly userSvc: UserService
-    ){}
+    ) { }
+
+    @Get('')
+    async getUser() {
+        try {
+            let data: any = [];
+            data = await this.userSvc.viewAllUser();
+            if(data.length > 0) {
+                return {
+                    status: HttpStatus.OK,
+                    data: data
+                }
+            } else {
+                return {
+                    status: HttpStatus.NOT_FOUND,
+                    message: 'No data'
+                }
+            }
+        } catch (error) {
+            return {
+                status: HttpStatus.BAD_REQUEST,
+                message: error
+            }
+        }
+    }
 
     @Post('')
     @UsePipes(new ValidationPipe())
-    async createUser(@Body() newUser: UserCreateDto){
+    async createUser(@Body() newUser: UserCreateDto) {
         try {
             let checkAccount = await this.userSvc.checkUser({
                 username: newUser.username,
                 password: newUser.password
             })
-            
-            if(checkAccount !== null) {
+
+            if (checkAccount !== null) {
                 return {
                     status: HttpStatus.CONFLICT,
                     message: ACCOUNT_EXIST
@@ -47,7 +71,7 @@ export class UserController {
     async login(@Body() login: LoginDto) {
         try {
             let data = await this.userSvc.checkUser(login);
-            if(data !== null) {
+            if (data !== null) {
                 return {
                     status: HttpStatus.OK,
                     data: data

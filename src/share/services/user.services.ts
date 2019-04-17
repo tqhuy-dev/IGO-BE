@@ -42,4 +42,16 @@ export class UserService {
             })
         })
     }
+
+    viewAllUser() {
+        return new Promise((resolve , reject) =>{
+            this.userModel.find({} , (error , result) =>{
+                if(error) {
+                    reject(error);
+                } else {
+                    resolve(result);
+                }
+            })
+        })
+    }
 }
