@@ -6,14 +6,17 @@ import { AuthGuard } from '@nestjs/passport';
 import { async } from 'rxjs/internal/scheduler/async';
 import { LoginDto } from './dto/login.dto';
 import { NOT_FOUND_ACCOUNT, ACCOUNT_EXIST } from './../../share/constant/message';
+import { AccountService } from 'src/share/services/account.services';
 
 @Controller('users')
 export class UserController {
     constructor(
-        private readonly userSvc: UserService
+        private readonly userSvc: UserService,
+        private readonly accountSvc: AccountService
     ) { }
 
     @Get('')
+    @UseGuards(AuthGuard('bearer'))
     async getUser() {
         try {
             let data: any = [];
@@ -71,8 +74,9 @@ export class UserController {
     async login(@Body() login: LoginDto) {
         try {
             let data: any = await this.userSvc.checkUser(login);
-            let token = await this.userSvc.createToken(data.username);
             if (data !== null) {
+                let token = await this.userSvc.createToken(data.username);
+                this.accountSvc.verifyAccount(data.username , token);
                 return {
                     status: HttpStatus.OK,
                     data: data,
