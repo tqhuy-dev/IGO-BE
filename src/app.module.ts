@@ -5,10 +5,12 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { MONGO_SOURCE } from './core/enviroment';
 import { UserModule } from './controller/user/user.module';
 import { LoggerMiddleware } from './share/middleware/logger.middleware';
+import { ContentsModule } from './controller/content/content.module';
 @Module({
   imports: [
     MongooseModule.forRoot(MONGO_SOURCE , { useNewUrlParser: true }),
-    UserModule
+    UserModule,
+    ContentsModule
   ],
   controllers: [AppController],
   providers: [AppService],

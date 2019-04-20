@@ -18,12 +18,12 @@ export class UserService {
                 username: newUserDTO.username,
                 password: newUserDTO.password,
                 active: false,
-                token: '',
                 first_name: newUserDTO.first_name,
                 last_name: newUserDTO.last_name,
                 phone: newUserDTO.phone,
                 birthday: newUserDTO.birthday,
-                follow: 0
+                follow: 0,
+                metadata: null
             })
 
             resolve(newUser.save())
@@ -32,10 +32,19 @@ export class UserService {
 
     checkUser(loginDto: LoginDto) {
         return new Promise((resolve, reject) =>{
+            let projection = {
+                username: true,
+                first_name: true,
+                last_name:  true,
+                phone: true,
+                birthday: true,
+                follow: true
+            }
+
             this.userModel.findOne({
                 username: loginDto.username,
                 password: loginDto.password
-            } , (error , result) =>{
+            } , projection , (error , result) =>{
                 if(error) {
                     reject(error)
                 } else {
