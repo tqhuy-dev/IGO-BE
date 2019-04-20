@@ -32,10 +32,13 @@ export class CreateContentDto {
 
     @IsNotEmpty()
     @IsNumber()
-    totalPrice: number;
+    total_price: number;
 
     @IsNotEmpty()
     hotel: [];
+
+    @IsNotEmpty()
+    images:[];
 
     metadata: any;
 }

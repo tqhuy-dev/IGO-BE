@@ -19,7 +19,8 @@ export interface Content {
         from: string,
         to: string
     },
-    totalPrice: number,
+    total_price: number,
     hotel: [],
-    metadata: any
+    metadata: any,
+    images: []
 }

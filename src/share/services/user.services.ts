@@ -38,7 +38,8 @@ export class UserService {
                 last_name:  true,
                 phone: true,
                 birthday: true,
-                follow: true
+                follow: true,
+                _id: true
             }
 
             this.userModel.findOne({
