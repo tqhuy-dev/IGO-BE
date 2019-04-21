@@ -6,11 +6,13 @@ import { MONGO_SOURCE } from './core/enviroment';
 import { UserModule } from './controller/user/user.module';
 import { LoggerMiddleware } from './share/middleware/logger.middleware';
 import { ContentsModule } from './controller/content/content.module';
+import { TravelPlacesModule } from './controller/travel-places/travel-places.module';
 @Module({
   imports: [
     MongooseModule.forRoot(MONGO_SOURCE , { useNewUrlParser: true }),
     UserModule,
-    ContentsModule
+    ContentsModule,
+    TravelPlacesModule
   ],
   controllers: [AppController],
   providers: [AppService],

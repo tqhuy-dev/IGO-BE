@@ -13,7 +13,6 @@ export class HttpStrategy extends PassportStrategy(Strategy) {
 
   async validate(token: string) {
     let data = await this.accountSvc.checkToken(token);
-    console.log(data);
     return data;
   }
 }
