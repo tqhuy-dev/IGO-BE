@@ -19,6 +19,7 @@ export class UserController {
     ) { }
 
     @Get('/:username/contents')
+    @UsePipes(new ValidationPipe())
     @UseGuards(AuthGuard('bearer'))
     async listContentsUser(@Param() username: ViewUserContentDto) {
         try {

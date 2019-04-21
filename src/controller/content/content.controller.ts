@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, HttpStatus, UseGuards, Param } from '@nestjs/common';
+import { Controller, Get, Post, Body, HttpStatus, UseGuards, Param, UsePipes } from '@nestjs/common';
 import { ContentService } from 'src/share/services/content.services';
 import { async } from 'rxjs/internal/scheduler/async';
 import { CreateContentDto } from './dto/create-content.dto';
@@ -7,6 +7,7 @@ import { ContentBusiness } from './business/content-business';
 import { WRONG_TYPE_VACATION } from './../../share/constant/message';
 import { ViewUserContentDto } from './dto/view-user-content.dto';
 import { ViewContentDto } from './dto/view-content.dto';
+import { ValidationPipe } from './../../share/pipe/validation.pipe';
 
 @Controller('contents')
 export class ContentsController {
@@ -16,6 +17,7 @@ export class ContentsController {
     ){}
 
     @Get('/:contentID')
+    @UsePipes(new ValidationPipe())
     @UseGuards(AuthGuard('bearer'))
     async getContent(@Param() param: ViewContentDto) {
         try {
@@ -33,6 +35,7 @@ export class ContentsController {
     }
 
     @Post('')
+    @UsePipes(new ValidationPipe())
     @UseGuards(AuthGuard('bearer'))
     async createContent(@Body() createContentDto: CreateContentDto) {
         try {
