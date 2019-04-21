@@ -1,10 +1,12 @@
-import { Controller, Get, Post, Body, HttpStatus, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, HttpStatus, UseGuards, Param } from '@nestjs/common';
 import { ContentService } from 'src/share/services/content.services';
 import { async } from 'rxjs/internal/scheduler/async';
 import { CreateContentDto } from './dto/create-content.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { ContentBusiness } from './business/content-business';
 import { WRONG_TYPE_VACATION } from './../../share/constant/message';
+import { ViewUserContentDto } from './dto/view-user-content.dto';
+import { ViewContentDto } from './dto/view-content.dto';
 
 @Controller('contents')
 export class ContentsController {
@@ -13,9 +15,21 @@ export class ContentsController {
         private readonly contentBusiness: ContentBusiness
     ){}
 
-    @Get('')
-    async getContents() {
-        return 'contents api is working';
+    @Get('/:contentID')
+    @UseGuards(AuthGuard('bearer'))
+    async getContent(@Param() param: ViewContentDto) {
+        try {
+            let data = await this.content.retrieveContentDetail(param.contentID);
+            return {
+                status: HttpStatus.OK,
+                data: data
+            }
+        } catch (error) {
+            return {
+                status: HttpStatus.BAD_REQUEST,
+                message: error
+            }
+        }
     }
 
     @Post('')

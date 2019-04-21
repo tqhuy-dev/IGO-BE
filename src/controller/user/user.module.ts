@@ -7,12 +7,15 @@ import { HttpStrategy } from 'src/share/guard/auth-guard';
 import { PassportModule } from '@nestjs/passport';
 import { AccountSchema } from './schema/account.schema';
 import { AccountService } from 'src/share/services/account.services';
+import { ContentService } from 'src/share/services/content.services';
+import { ContentSchema } from '../content/schema/content.schema';
 
 @Module({
     imports: [
         MongooseModule.forFeature([
             { name: 'User' , schema: UserSchema},
-            { name: 'Account' , schema: AccountSchema}
+            { name: 'Account' , schema: AccountSchema},
+            { name : 'Content' , schema: ContentSchema}
         ]),
         PassportModule.register({ defaultStrategy: 'bearer' }),
     ],
@@ -20,7 +23,8 @@ import { AccountService } from 'src/share/services/account.services';
     providers: [
         UserService,
         HttpStrategy,
-        AccountService
+        AccountService,
+        ContentService
     ],
 })
 export class UserModule {};

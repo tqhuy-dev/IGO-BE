@@ -10,6 +10,34 @@ export class ContentService {
         @InjectModel('Content') private readonly contentModel: Model<Content>
     ) {}
 
+    retrieveContentDetail(idContent: string) {
+        return new Promise((resolve , reject) =>{
+            this.contentModel.findOne({
+                _id: idContent
+            } , (error , result) =>{
+                if(error) {
+                    reject(error);
+                } else {
+                    resolve(result);
+                }
+            })
+        })
+    }
+
+    retrieveUserContents(username: string) {
+        return new Promise((resolve , reject) =>{
+            this.contentModel.find({
+                username: username
+            } , (error , result) =>{
+                if(error) {
+                    reject(error);
+                } else {
+                    resolve(result);
+                }
+            })
+        })
+    }
+
     createServices(createContentDto: CreateContentDto) {
         return new Promise((resolve , reject) =>{
             let dataCheckin = [];
