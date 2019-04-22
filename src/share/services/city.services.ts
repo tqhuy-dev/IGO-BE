@@ -65,7 +65,17 @@ export class CityService {
         })
     }
 
-    retrieveCity() {
-        
+    retrieveCityLocation(idCity) {
+        return new Promise((resolve , reject) =>{
+            this.locationModel.find({
+                city: idCity
+            } , (error , result) =>{
+                if(error) {
+                    reject(error);
+                } else {
+                    resolve(result);
+                }
+            })
+        })
     }
 }

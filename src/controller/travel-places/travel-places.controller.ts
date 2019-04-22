@@ -1,4 +1,4 @@
-import { Controller, Get, Post, HttpStatus, Body, UseGuards, UsePipes } from '@nestjs/common';
+import { Controller, Get, Post, HttpStatus, Body, UseGuards, UsePipes, Param } from '@nestjs/common';
 import { async } from 'rxjs/internal/scheduler/async';
 import { CityService } from 'src/share/services/city.services';
 import { CreateTravelPlaceDto } from './dto/create-travel-places.dto';
@@ -8,6 +8,7 @@ import { CreateLocationDTO } from './dto/create-location.dto';
 import { WRONG_CITY } from 'src/share/constant/message';
 import { CountryService } from 'src/share/services/country.services';
 import { CreateCountryDto } from './dto/create-country.dto';
+import { RetrieveCityDto } from './dto/retrieve-city.dto';
 
 @Controller('places')
 export class TravelPlacesController {
@@ -23,6 +24,24 @@ export class TravelPlacesController {
         try {
             await this.countrySVC.checkCountry(cityDTO.country);
             let data = await this.citySvc.createCity(cityDTO);
+            return {
+                status: HttpStatus.OK,
+                data: data
+            }
+        } catch (error) {
+            return {
+                status: HttpStatus.OK,
+                message: error
+            }
+        }
+    }
+
+    @Get('/:cityID')
+    @UseGuards(AuthGuard('bearer'))
+    @UsePipes(new ValidationPipe())
+    async retrieveLocationListCity(@Param() param: RetrieveCityDto) {
+        try {
+            let data = await this.citySvc.retrieveCityLocation(param.cityID);
             return {
                 status: HttpStatus.OK,
                 data: data
