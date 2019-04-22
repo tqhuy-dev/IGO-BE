@@ -10,6 +10,7 @@ import { CountryService } from 'src/share/services/country.services';
 import { CreateCountryDto } from './dto/create-country.dto';
 import { RetrieveCityDto } from './dto/retrieve-city.dto';
 import { RetrieveCountryDto } from './dto/retrieve-country.dto';
+import { WRONG_COUNTRY } from './../../share/constant/message';
 
 @Controller('places')
 export class TravelPlacesController {
@@ -42,7 +43,13 @@ export class TravelPlacesController {
     @UsePipes(new ValidationPipe())
     async retrieveLocationListCity(@Param() param: RetrieveCityDto) {
         try {
-            let data = await this.citySvc.retrieveCityLocation(param.cityID);
+            let data: any = await this.citySvc.retrieveCityLocation(param.cityID);
+            if(data.length === 0) {
+                return {
+                    status: HttpStatus.BAD_REQUEST,
+                    message: WRONG_CITY
+                }
+            }
             return {
                 status: HttpStatus.OK,
                 data: data
@@ -78,7 +85,13 @@ export class TravelPlacesController {
     @UsePipes(new ValidationPipe())
     async retrieveCityOfCountry(@Param() param : RetrieveCountryDto) {
         try {
-            let  data = await this.citySvc.retrieveCityOfCountry(param.countryID);
+            let data: any = await this.citySvc.retrieveCityOfCountry(param.countryID);
+            if(data.length === 0) {
+                return {
+                    status: HttpStatus.BAD_REQUEST,
+                    message: WRONG_COUNTRY
+                }
+            }
             return {
                 status: HttpStatus.OK,
                 data: data
