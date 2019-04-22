@@ -7,8 +7,20 @@ import { WRONG_COUNTRY } from './../constant/message';
 @Injectable()
 export class CountryService {
     constructor(
-        @InjectModel('Country') private readonly countryModel: Model<Country>
+        @InjectModel('Country') private readonly countryModel: Model<Country>,
     ) {}
+
+    retrieveCityList() {
+        return new Promise((resolve , reject) =>{
+            this.countryModel.find({} , (error ,result) =>{
+                if(error) {
+                    reject(error);
+                } else {
+                    resolve(result);
+                }
+            })
+        })
+    }
 
     createCountry(country: CreateCountryDto) {
         return new Promise((resolve , reject) =>{

@@ -9,6 +9,7 @@ import { WRONG_CITY } from 'src/share/constant/message';
 import { CountryService } from 'src/share/services/country.services';
 import { CreateCountryDto } from './dto/create-country.dto';
 import { RetrieveCityDto } from './dto/retrieve-city.dto';
+import { RetrieveCountryDto } from './dto/retrieve-country.dto';
 
 @Controller('places')
 export class TravelPlacesController {
@@ -36,7 +37,7 @@ export class TravelPlacesController {
         }
     }
 
-    @Get('/:cityID')
+    @Get('/locations/:cityID')
     @UseGuards(AuthGuard('bearer'))
     @UsePipes(new ValidationPipe())
     async retrieveLocationListCity(@Param() param: RetrieveCityDto) {
@@ -49,6 +50,42 @@ export class TravelPlacesController {
         } catch (error) {
             return {
                 status: HttpStatus.OK,
+                message: error
+            }
+        }
+    }
+
+    @Get('')
+    @UseGuards(AuthGuard('bearer'))
+    @UsePipes(new ValidationPipe())
+    async retrieveCityList() {
+        try {
+            let data = await this.countrySVC.retrieveCityList();
+            return {
+                status: HttpStatus.OK,
+                data: data
+            }
+        } catch (error) {
+            return {
+                status: HttpStatus.OK,
+                message: error
+            }
+        }
+    }
+
+    @Get('/:countryID')
+    @UseGuards(AuthGuard('bearer'))
+    @UsePipes(new ValidationPipe())
+    async retrieveCityOfCountry(@Param() param : RetrieveCountryDto) {
+        try {
+            let  data = await this.citySvc.retrieveCityOfCountry(param.countryID);
+            return {
+                status: HttpStatus.OK,
+                data: data
+            }
+        } catch (error) {
+            return {
+                status: HttpStatus.BAD_REQUEST,
                 message: error
             }
         }

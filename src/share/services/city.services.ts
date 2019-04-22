@@ -78,4 +78,18 @@ export class CityService {
             })
         })
     }
+
+    retrieveCityOfCountry(idCountry: string) {
+        return new Promise((resolve , reject) =>{
+            this.cityModel.find({
+                country: idCountry
+            } , (error , result) =>{
+                if(error) {
+                    reject(error);
+                } else {
+                    resolve(result);
+                }
+            })
+        })
+    } 
 }
