@@ -5,4 +5,5 @@ export class TravelPlaces {
     checkin: number;
     weather: any;
     trend: string;
+    description: string;
 }

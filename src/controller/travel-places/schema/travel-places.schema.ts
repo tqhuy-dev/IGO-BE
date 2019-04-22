@@ -5,5 +5,6 @@ export const TravelPlacesSchema = mongoose.Schema({
     rate: Number,
     checkin: Number,
     weather: mongoose.Schema.Types.Mixed,
-    trend: String
+    trend: String,
+    description: String
 })

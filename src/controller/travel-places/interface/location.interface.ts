@@ -6,4 +6,5 @@ export class Location {
     reviews: [];
     trend: string;
     price: number;
+    description: string;
 }

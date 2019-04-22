@@ -9,4 +9,8 @@ export class CreateLocationDTO {
     @IsNotEmpty()
     name: string;
 
+    @IsString()
+    @IsNotEmpty()
+    description: string;
+
 }

@@ -8,4 +8,8 @@ export class CreateTravelPlaceDto {
     @IsString()
     @IsNotEmpty()
     name: string;
+
+    @IsString()
+    @IsNotEmpty()
+    description: string;
 }

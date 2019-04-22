@@ -7,4 +7,5 @@ export const LocationSchema = mongosee.Schema({
     reviews:[],
     trend: String,
     price: Number,
+    description: String
 });

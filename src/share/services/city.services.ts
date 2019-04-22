@@ -20,6 +20,7 @@ export class CityService {
             const newCity = new this.cityModel({
                 country: cityDTO.country,
                 name: cityDTO.name,
+                description: cityDTO.description,
                 rate: 0,
                 checkin: 0,
                 weather: {
@@ -61,5 +62,9 @@ export class CityService {
                 }
             })
         })
+    }
+
+    retrieveCity() {
+        
     }
 }
