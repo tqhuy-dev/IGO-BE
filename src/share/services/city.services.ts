@@ -39,6 +39,7 @@ export class CityService {
             const newLocation = new this.locationModel({
                 city: locationDTO.city,
                 name: locationDTO.name,
+                description: locationDTO.description,
                 rate: 0,
                 checkin: 0,
                 reviews: [],
