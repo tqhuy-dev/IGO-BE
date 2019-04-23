@@ -38,7 +38,7 @@ export class ContentService {
         })
     }
 
-    createServices(createContentDto: CreateContentDto) {
+    createContent(createContentDto: CreateContentDto) {
         return new Promise((resolve , reject) =>{
             let dataCheckin = [];
             dataCheckin = createContentDto.location.checkin.map((element:any) =>{

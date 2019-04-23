@@ -4,7 +4,7 @@ import { async } from 'rxjs/internal/scheduler/async';
 import { CreateContentDto } from './dto/create-content.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { ContentBusiness } from './business/content-business';
-import { WRONG_TYPE_VACATION } from './../../share/constant/message';
+import { WRONG_TYPE_VACATION, CREATE_CONTENT_SUCCESS } from './../../share/constant/message';
 import { ViewUserContentDto } from './dto/view-user-content.dto';
 import { ViewContentDto } from './dto/view-content.dto';
 import { ValidationPipe } from './../../share/pipe/validation.pipe';
@@ -45,10 +45,11 @@ export class ContentsController {
                     message: WRONG_TYPE_VACATION
                 }
             }
-            let data  = await this.content.createServices(createContentDto);
+            let data  = await this.content.createContent(createContentDto);
             return {
                 status: HttpStatus.OK,
-                data: data
+                data: data,
+                message: CREATE_CONTENT_SUCCESS
             }
         } catch (error) {
             return {
