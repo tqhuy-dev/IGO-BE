@@ -23,5 +23,6 @@ export const ContentSchema = mongoose.Schema({
     total_price: Number,
     hotel: [],
     images: [],
-    metadata: mongoose.Schema.Types.Mixed
+    metadata: mongoose.Schema.Types.Mixed,
+    createAt: String
 });

@@ -22,5 +22,6 @@ export interface Content {
     total_price: number,
     hotel: [],
     metadata: any,
-    images: []
+    images: [],
+    createAt: string
 }

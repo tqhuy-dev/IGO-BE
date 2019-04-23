@@ -74,7 +74,8 @@ export class ContentService {
                 total_price: createContentDto.total_price,
                 hotel: createContentDto.hotel,
                 metadata: createContentDto.metadata,
-                images: createContentDto.images
+                images: createContentDto.images,
+                createAt: new Date().getTime().toString()
             })
 
             resolve(newContent.save())
