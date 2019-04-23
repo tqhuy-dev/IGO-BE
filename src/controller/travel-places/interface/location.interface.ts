@@ -7,4 +7,5 @@ export class Location {
     trend: string;
     price: number;
     description: string;
+    address: string;
 }

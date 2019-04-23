@@ -40,7 +40,7 @@ export class CountryService {
                 if(error) {
                     reject(WRONG_COUNTRY);
                 } else {
-                    resolve(true);
+                    resolve(result);
                 }
             })
         })

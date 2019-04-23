@@ -43,6 +43,7 @@ export class TravelPlacesController {
     @UsePipes(new ValidationPipe())
     async retrieveLocationListCity(@Param() param: RetrieveCityDto) {
         try {
+            let city: any = await this.citySvc.checkExistCity(param.cityID);
             let data: any = await this.citySvc.retrieveCityLocation(param.cityID);
             if(data.length === 0) {
                 return {
@@ -52,7 +53,8 @@ export class TravelPlacesController {
             }
             return {
                 status: HttpStatus.OK,
-                data: data
+                data: data,
+                city: city
             }
         } catch (error) {
             return {
@@ -85,6 +87,7 @@ export class TravelPlacesController {
     @UsePipes(new ValidationPipe())
     async retrieveCityOfCountry(@Param() param : RetrieveCountryDto) {
         try {
+            let country: any = await this.countrySVC.checkCountry(param.countryID);
             let data: any = await this.citySvc.retrieveCityOfCountry(param.countryID);
             if(data.length === 0) {
                 return {
@@ -94,7 +97,8 @@ export class TravelPlacesController {
             }
             return {
                 status: HttpStatus.OK,
-                data: data
+                data: data,
+                country: country
             }
         } catch (error) {
             return {

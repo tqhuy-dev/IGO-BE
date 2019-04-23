@@ -13,4 +13,8 @@ export class CreateLocationDTO {
     @IsNotEmpty()
     description: string;
 
+    @IsString()
+    @IsNotEmpty()
+    address: string;
+
 }

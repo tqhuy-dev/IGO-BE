@@ -40,6 +40,7 @@ export class CityService {
                 city: locationDTO.city,
                 name: locationDTO.name,
                 description: locationDTO.description,
+                address: locationDTO.address,
                 rate: 0,
                 checkin: 0,
                 reviews: [],
@@ -59,7 +60,7 @@ export class CityService {
                 if(error) {
                     reject(WRONG_CITY);
                 } else {
-                   resolve(true);
+                   resolve(result);
                 }
             })
         })
