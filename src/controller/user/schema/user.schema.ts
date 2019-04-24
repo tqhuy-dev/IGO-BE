@@ -8,5 +8,6 @@ export const UserSchema = mongoose.Schema({
     phone: String,
     birthday: String,
     follow: Number,
-    metadata: mongoose.Schema.Types.Mixed
+    metadata: mongoose.Schema.Types.Mixed,
+    avatar: String
 });

@@ -24,4 +24,8 @@ export class UserCreateDto {
     @IsString()
     @IsNotEmpty()
     birthday: string;
+
+    @IsString()
+    avatar: string;
+    
 }

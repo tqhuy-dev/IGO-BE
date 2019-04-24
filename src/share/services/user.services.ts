@@ -23,7 +23,8 @@ export class UserService {
                 phone: newUserDTO.phone,
                 birthday: newUserDTO.birthday,
                 follow: 0,
-                metadata: null
+                metadata: null,
+                avatar: newUserDTO.avatar
             })
 
             resolve(newUser.save())

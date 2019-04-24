@@ -8,5 +8,6 @@ export interface User {
     phone: string;
     birthday: string;
     follow: number;
-    metadata: any
+    metadata: any;
+    avatar: string;
 }

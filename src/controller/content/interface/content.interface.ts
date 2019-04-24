@@ -1,4 +1,9 @@
 export interface Content {
+    user_data: {
+        username: string,
+        name: string,
+        avatar: string
+    };
     username: string;
     content: string;
     location: {
@@ -10,6 +15,8 @@ export interface Content {
     reaction:{
         like: number,
         love: number,
+        comments: number,
+        share: number
     },
     comments:[],
     rate: number,

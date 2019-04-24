@@ -3,11 +3,14 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Content } from './../../controller/content/interface/content.interface';
 import { CreateContentDto } from 'src/controller/content/dto/create-content.dto';
+import { User } from 'src/controller/user/interface/user.interface';
+import { async } from 'rxjs/internal/scheduler/async';
 
 @Injectable()
 export class ContentService {
     constructor(
-        @InjectModel('Content') private readonly contentModel: Model<Content>
+        @InjectModel('Content') private readonly contentModel: Model<Content>,
+        @InjectModel('User') private readonly userModel: Model<User>
     ) {}
 
     retrieveContentDetail(idContent: string) {
@@ -39,7 +42,7 @@ export class ContentService {
     }
 
     createContent(createContentDto: CreateContentDto) {
-        return new Promise((resolve , reject) =>{
+        return new Promise(async (resolve , reject) =>{
             let dataCheckin = [];
             dataCheckin = createContentDto.location.checkin.map((element:any) =>{
                 return {
@@ -50,7 +53,15 @@ export class ContentService {
                     comments: []
                 }
             });
+            let dataUser = await this.userModel.findOne({
+                username: createContentDto.username
+            })
             const newContent = new this.contentModel({
+                user_data: {
+                    username:createContentDto.username,
+                    name: dataUser.first_name + ' ' + dataUser.last_name,
+                    avatar: dataUser.avatar
+                },
                 username: createContentDto.username,
                 content: createContentDto.content,
                 location:{
@@ -61,7 +72,9 @@ export class ContentService {
                 tag: createContentDto.tag,
                 reaction:{
                     like:0,
-                    love:0
+                    love:0,
+                    comments:0,
+                    share:0
                 },
                 comments: [],
                 rate: 0,
@@ -75,7 +88,7 @@ export class ContentService {
                 hotel: createContentDto.hotel,
                 metadata: createContentDto.metadata,
                 images: createContentDto.images,
-                createAt: new Date().getTime().toString()
+                createAt: (new Date().getTime()).toString()
             })
 
             resolve(newContent.save())
