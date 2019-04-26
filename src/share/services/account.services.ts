@@ -58,9 +58,14 @@ export class AccountService {
                     resolve(false)
                 } else {
                     if(result !== null) {
-                        resolve(true);
+                        resolve({
+                            isAuthorization: true,
+                            data: result
+                        });
                     } else {
-                        resolve(false);
+                        resolve({
+                            isAuthorization:false,
+                        });
                     }
                 }
             })
