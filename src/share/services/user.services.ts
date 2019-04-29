@@ -11,6 +11,26 @@ export class UserService {
     constructor(
         @InjectModel('User') private readonly userModel: Model<User>
     ) {}
+
+    retrieveUserDetail(id: string) {
+        return new Promise((resolve , reject) =>{
+            let projection = {
+                password: false,
+                active: false,
+                _id: false
+            };
+
+            this.userModel.findOne({
+                username: id
+            } , projection , (error , result) =>{
+                if(error) {
+                    reject(error);
+                } else {
+                    resolve(result);
+                }
+            })
+        })
+    }
     
     createUser(newUserDTO: UserCreateDto) {
         return new Promise((resolve , reject) =>{

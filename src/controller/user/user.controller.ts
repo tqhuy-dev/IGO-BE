@@ -1,4 +1,4 @@
-import { Controller, Get, Post, HttpStatus, UsePipes, Body, UseGuards, Param } from '@nestjs/common';
+import { Controller, Get, Post, HttpStatus, UsePipes, Body, UseGuards, Param, Req } from '@nestjs/common';
 import { UserService } from 'src/share/services/user.services';
 import { ValidationPipe } from '../../share/pipe/validation.pipe';
 import { UserCreateDto } from './dto/user-create.dto';
@@ -9,6 +9,8 @@ import { NOT_FOUND_ACCOUNT, ACCOUNT_EXIST } from './../../share/constant/message
 import { AccountService } from 'src/share/services/account.services';
 import { ContentService } from 'src/share/services/content.services';
 import { ViewUserContentDto } from '../content/dto/view-user-content.dto';
+import { Request } from 'express';
+import { UserDetailDto } from './dto/user-detail.dto';
 
 @Controller('users')
 export class UserController {
@@ -17,6 +19,29 @@ export class UserController {
         private readonly accountSvc: AccountService,
         private readonly contentSvc: ContentService
     ) { }
+
+    @Get('/:username')
+    @UsePipes(new ValidationPipe())
+    @UseGuards(AuthGuard('bearer'))
+    async retrieveUserDetail(@Param() param: UserDetailDto) {
+        try {
+            let userInformation = await this.userSvc.retrieveUserDetail(param.username);
+            let contents = await this.contentSvc.retrieveUserContents(param.username);
+            let data = {
+                user: userInformation,
+                contents: contents
+            }
+            return {
+                status: HttpStatus.OK,
+                data: data
+            }
+        } catch (error) {
+            return {
+                status: HttpStatus.BAD_REQUEST,
+                message: error
+            }
+        }
+    }
 
     @Get('/:username/contents')
     @UsePipes(new ValidationPipe())
@@ -36,29 +61,24 @@ export class UserController {
         }
     }
 
-    @Get('')
+    @Get('/contents')
+    @UsePipes(new ValidationPipe())
     @UseGuards(AuthGuard('bearer'))
-    async getUser() {
+    async listContents(
+    ) {
         try {
-            let data: any = [];
-            data = await this.userSvc.viewAllUser();
-            if(data.length > 0) {
-                return {
-                    status: HttpStatus.OK,
-                    data: data
-                }
-            } else {
-                return {
-                    status: HttpStatus.NOT_FOUND,
-                    message: 'No data'
-                }
-            }
+            let data = await this.contentSvc.retrieveAllContents();
+            return {
+                status: HttpStatus.OK,
+                data: data
+            };
         } catch (error) {
             return {
                 status: HttpStatus.BAD_REQUEST,
                 message: error
             }
         }
+
     }
 
     @Post('')
@@ -97,7 +117,7 @@ export class UserController {
             let data: any = await this.userSvc.checkUser(login);
             if (data !== null) {
                 let token = await this.userSvc.createToken(data.username);
-                this.accountSvc.verifyAccount(data.username , token);
+                this.accountSvc.verifyAccount(data.username, token);
                 return {
                     status: HttpStatus.OK,
                     data: data,

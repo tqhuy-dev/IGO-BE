@@ -41,6 +41,20 @@ export class ContentService {
         })
     }
 
+    retrieveAllContents() {
+        return new Promise((resolve , reject) =>{
+            this.contentModel.find({
+
+            } , (error , result) =>{
+                if(error) {
+                    reject(error);
+                } else {
+                    resolve(result);
+                }
+            })
+        })
+    }
+
     createContent(createContentDto: CreateContentDto) {
         return new Promise(async (resolve , reject) =>{
             let dataCheckin = [];
@@ -103,7 +117,6 @@ export class ContentService {
                 if(error) {
                     reject(error);
                 }else {
-                    console.log(result);
                     let index = result.findIndex(o => o._id.toString() === idContent);
                     if(index === -1) {
                         resolve(false);
