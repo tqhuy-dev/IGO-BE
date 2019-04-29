@@ -61,26 +61,6 @@ export class UserController {
         }
     }
 
-    @Get('/contents')
-    @UsePipes(new ValidationPipe())
-    @UseGuards(AuthGuard('bearer'))
-    async listContents(
-    ) {
-        try {
-            let data = await this.contentSvc.retrieveAllContents();
-            return {
-                status: HttpStatus.OK,
-                data: data
-            };
-        } catch (error) {
-            return {
-                status: HttpStatus.BAD_REQUEST,
-                message: error
-            }
-        }
-
-    }
-
     @Post('')
     @UsePipes(new ValidationPipe())
     async createUser(@Body() newUser: UserCreateDto) {

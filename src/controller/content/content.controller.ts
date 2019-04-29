@@ -18,6 +18,24 @@ export class ContentsController {
         private readonly accountSvc: AccountService
     ) { }
 
+    @Get('')
+    @UsePipes(new ValidationPipe())
+    @UseGuards(AuthGuard('bearer'))
+    async retrieveAllContent() {
+        try {
+            let data = await this.content.retrieveAllContents();
+            return {
+                status: HttpStatus.OK,
+                data: data
+            }
+        } catch (error) {
+            return {
+                status: HttpStatus.BAD_REQUEST,
+                message: error
+            }
+        }
+    }
+
     @Get('/:contentID')
     @UsePipes(new ValidationPipe())
     @UseGuards(AuthGuard('bearer'))
