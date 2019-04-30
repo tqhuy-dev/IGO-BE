@@ -10,12 +10,14 @@ import { ViewContentDto } from './dto/view-content.dto';
 import { ValidationPipe } from './../../share/pipe/validation.pipe';
 import { Request } from 'express';
 import { AccountService } from 'src/share/services/account.services';
+import { UserService } from 'src/share/services/user.services';
 @Controller('contents')
 export class ContentsController {
     constructor(
         private readonly content: ContentService,
         private readonly contentBusiness: ContentBusiness,
-        private readonly accountSvc: AccountService
+        private readonly accountSvc: AccountService,
+        private readonly userSvc: UserService
     ) { }
 
     @Get('')
@@ -23,7 +25,35 @@ export class ContentsController {
     @UseGuards(AuthGuard('bearer'))
     async retrieveAllContent() {
         try {
-            let data = await this.content.retrieveAllContents();
+            let data = [];
+            let dataContents: any = await this.content.retrieveAllContents();
+            for (let i = 0 ; i < dataContents.length ; i ++) {
+                let dataElementContents = {
+                    location: dataContents[i].location,
+                    reaction: dataContents[i].reaction,
+                    tag: dataContents[i].tag,
+                    comments: dataContents[i].comments,
+                    travel: dataContents[i].travel,
+                    hotel: dataContents[i].hotel,
+                    images: dataContents[i].images,
+                    username: dataContents[i].username,
+                    content: dataContents[i].content,
+                    rate: dataContents[i].rate,
+                    type: dataContents[i].type,
+                    range: dataContents[i].range,
+                    total_price: dataContents[i].total_price,
+                    metadata: dataContents[i].metadata,
+                    createAt: dataContents[i].createAt,
+                    user_data: {}
+                };
+                let dataUser: any = await  this.userSvc.retrieveUserDetail(dataContents[i].username);
+                dataElementContents.user_data = {
+                    username: dataUser.username,
+                    name: dataUser.first_name + ' ' + dataUser.last_name,
+                    avatar: dataUser.avatar
+                };
+                data.push(dataElementContents);
+            }
             return {
                 status: HttpStatus.OK,
                 data: data

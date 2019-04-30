@@ -71,11 +71,6 @@ export class ContentService {
                 username: createContentDto.username
             })
             const newContent = new this.contentModel({
-                user_data: {
-                    username:createContentDto.username,
-                    name: dataUser.first_name + ' ' + dataUser.last_name,
-                    avatar: dataUser.avatar
-                },
                 username: createContentDto.username,
                 content: createContentDto.content,
                 location:{

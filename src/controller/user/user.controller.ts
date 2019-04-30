@@ -1,4 +1,4 @@
-import { Controller, Get, Post, HttpStatus, UsePipes, Body, UseGuards, Param, Req } from '@nestjs/common';
+import { Controller, Get, Post, HttpStatus, UsePipes, Body, UseGuards, Param, Req, Put } from '@nestjs/common';
 import { UserService } from 'src/share/services/user.services';
 import { ValidationPipe } from '../../share/pipe/validation.pipe';
 import { UserCreateDto } from './dto/user-create.dto';
@@ -19,6 +19,13 @@ export class UserController {
         private readonly accountSvc: AccountService,
         private readonly contentSvc: ContentService
     ) { }
+
+    @Put('')
+    @UsePipes(new ValidationPipe())
+    @UseGuards(AuthGuard('bearer'))
+    async editUser() {
+
+    }
 
     @Get('/:username')
     @UsePipes(new ValidationPipe())
@@ -48,7 +55,35 @@ export class UserController {
     @UseGuards(AuthGuard('bearer'))
     async listContentsUser(@Param() username: ViewUserContentDto) {
         try {
-            let data: any = await this.contentSvc.retrieveUserContents(username.username);
+            let data = [];
+            let dataContents: any = await this.contentSvc.retrieveUserContents(username.username);
+            for (let i = 0 ; i < dataContents.length ; i ++) {
+                let dataElementContents = {
+                    location: dataContents[i].location,
+                    reaction: dataContents[i].reaction,
+                    tag: dataContents[i].tag,
+                    comments: dataContents[i].comments,
+                    travel: dataContents[i].travel,
+                    hotel: dataContents[i].hotel,
+                    images: dataContents[i].images,
+                    username: dataContents[i].username,
+                    content: dataContents[i].content,
+                    rate: dataContents[i].rate,
+                    type: dataContents[i].type,
+                    range: dataContents[i].range,
+                    total_price: dataContents[i].total_price,
+                    metadata: dataContents[i].metadata,
+                    createAt: dataContents[i].createAt,
+                    user_data: {}
+                };
+                let dataUser: any = await  this.userSvc.retrieveUserDetail(dataContents[i].username);
+                dataElementContents.user_data = {
+                    username: dataUser.username,
+                    name: dataUser.first_name + ' ' + dataUser.last_name,
+                    avatar: dataUser.avatar
+                };
+                data.push(dataElementContents);
+            }
             return {
                 status: HttpStatus.OK,
                 data: data

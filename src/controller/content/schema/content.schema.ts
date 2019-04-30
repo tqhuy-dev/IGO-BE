@@ -1,6 +1,5 @@
 import * as mongoose from 'mongoose';
 export const ContentSchema = mongoose.Schema({
-    user_data: mongoose.Schema.Types.Mixed,
     username: String,
     content: String,
     location: {

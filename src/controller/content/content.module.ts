@@ -7,6 +7,7 @@ import { ContentBusiness } from './business/content-business';
 import { UserSchema } from '../user/schema/user.schema';
 import { AccountSchema } from '../user/schema/account.schema';
 import { AccountService } from 'src/share/services/account.services';
+import { UserService } from 'src/share/services/user.services';
 
 @Module({
     imports: [
@@ -22,7 +23,8 @@ import { AccountService } from 'src/share/services/account.services';
     providers: [
         ContentService,
         ContentBusiness,
-        AccountService
+        AccountService,
+        UserService
     ],
 })
 export class ContentsModule {};
