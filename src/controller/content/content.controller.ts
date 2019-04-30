@@ -20,40 +20,46 @@ export class ContentsController {
         private readonly userSvc: UserService
     ) { }
 
+    async getDataUserFromContent() {
+        let data = [];
+        let dataContents: any = await this.content.retrieveAllContents();
+        for (let i = 0 ; i < dataContents.length ; i ++) {
+            let dataElementContents = {
+                location: dataContents[i].location,
+                reaction: dataContents[i].reaction,
+                tag: dataContents[i].tag,
+                comments: dataContents[i].comments,
+                travel: dataContents[i].travel,
+                hotel: dataContents[i].hotel,
+                images: dataContents[i].images,
+                username: dataContents[i].username,
+                content: dataContents[i].content,
+                rate: dataContents[i].rate,
+                type: dataContents[i].type,
+                range: dataContents[i].range,
+                total_price: dataContents[i].total_price,
+                metadata: dataContents[i].metadata,
+                createAt: dataContents[i].createAt,
+                user_data: {}
+            };
+            let dataUser: any = await  this.userSvc.retrieveUserDetail(dataContents[i].username);
+            dataElementContents.user_data = {
+                username: dataUser.username,
+                name: dataUser.first_name + ' ' + dataUser.last_name,
+                avatar: dataUser.avatar
+            };
+            data.push(dataElementContents);
+        }
+        return data;
+    }
+
+
     @Get('')
     @UsePipes(new ValidationPipe())
     @UseGuards(AuthGuard('bearer'))
     async retrieveAllContent() {
         try {
-            let data = [];
-            let dataContents: any = await this.content.retrieveAllContents();
-            for (let i = 0 ; i < dataContents.length ; i ++) {
-                let dataElementContents = {
-                    location: dataContents[i].location,
-                    reaction: dataContents[i].reaction,
-                    tag: dataContents[i].tag,
-                    comments: dataContents[i].comments,
-                    travel: dataContents[i].travel,
-                    hotel: dataContents[i].hotel,
-                    images: dataContents[i].images,
-                    username: dataContents[i].username,
-                    content: dataContents[i].content,
-                    rate: dataContents[i].rate,
-                    type: dataContents[i].type,
-                    range: dataContents[i].range,
-                    total_price: dataContents[i].total_price,
-                    metadata: dataContents[i].metadata,
-                    createAt: dataContents[i].createAt,
-                    user_data: {}
-                };
-                let dataUser: any = await  this.userSvc.retrieveUserDetail(dataContents[i].username);
-                dataElementContents.user_data = {
-                    username: dataUser.username,
-                    name: dataUser.first_name + ' ' + dataUser.last_name,
-                    avatar: dataUser.avatar
-                };
-                data.push(dataElementContents);
-            }
+            let data = await this.getDataUserFromContent();
             return {
                 status: HttpStatus.OK,
                 data: data

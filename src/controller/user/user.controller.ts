@@ -20,6 +20,39 @@ export class UserController {
         private readonly contentSvc: ContentService
     ) { }
 
+    async getDataUserFromContent(username: string) {
+        let data = [];
+        let dataContents: any = await this.contentSvc.retrieveUserContents(username);
+        for (let i = 0 ; i < dataContents.length ; i ++) {
+            let dataElementContents = {
+                location: dataContents[i].location,
+                reaction: dataContents[i].reaction,
+                tag: dataContents[i].tag,
+                comments: dataContents[i].comments,
+                travel: dataContents[i].travel,
+                hotel: dataContents[i].hotel,
+                images: dataContents[i].images,
+                username: dataContents[i].username,
+                content: dataContents[i].content,
+                rate: dataContents[i].rate,
+                type: dataContents[i].type,
+                range: dataContents[i].range,
+                total_price: dataContents[i].total_price,
+                metadata: dataContents[i].metadata,
+                createAt: dataContents[i].createAt,
+                user_data: {}
+            };
+            let dataUser: any = await  this.userSvc.retrieveUserDetail(dataContents[i].username);
+            dataElementContents.user_data = {
+                username: dataUser.username,
+                name: dataUser.first_name + ' ' + dataUser.last_name,
+                avatar: dataUser.avatar
+            };
+            data.push(dataElementContents);
+        }
+        return data;
+    }
+
     @Put('')
     @UsePipes(new ValidationPipe())
     @UseGuards(AuthGuard('bearer'))
@@ -33,7 +66,7 @@ export class UserController {
     async retrieveUserDetail(@Param() param: UserDetailDto) {
         try {
             let userInformation = await this.userSvc.retrieveUserDetail(param.username);
-            let contents = await this.contentSvc.retrieveUserContents(param.username);
+            let contents = await this.getDataUserFromContent(param.username);
             let data = {
                 user: userInformation,
                 contents: contents
@@ -55,35 +88,7 @@ export class UserController {
     @UseGuards(AuthGuard('bearer'))
     async listContentsUser(@Param() username: ViewUserContentDto) {
         try {
-            let data = [];
-            let dataContents: any = await this.contentSvc.retrieveUserContents(username.username);
-            for (let i = 0 ; i < dataContents.length ; i ++) {
-                let dataElementContents = {
-                    location: dataContents[i].location,
-                    reaction: dataContents[i].reaction,
-                    tag: dataContents[i].tag,
-                    comments: dataContents[i].comments,
-                    travel: dataContents[i].travel,
-                    hotel: dataContents[i].hotel,
-                    images: dataContents[i].images,
-                    username: dataContents[i].username,
-                    content: dataContents[i].content,
-                    rate: dataContents[i].rate,
-                    type: dataContents[i].type,
-                    range: dataContents[i].range,
-                    total_price: dataContents[i].total_price,
-                    metadata: dataContents[i].metadata,
-                    createAt: dataContents[i].createAt,
-                    user_data: {}
-                };
-                let dataUser: any = await  this.userSvc.retrieveUserDetail(dataContents[i].username);
-                dataElementContents.user_data = {
-                    username: dataUser.username,
-                    name: dataUser.first_name + ' ' + dataUser.last_name,
-                    avatar: dataUser.avatar
-                };
-                data.push(dataElementContents);
-            }
+            let data = await this.getDataUserFromContent(username.username);
             return {
                 status: HttpStatus.OK,
                 data: data
