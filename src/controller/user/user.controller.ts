@@ -11,6 +11,7 @@ import { ContentService } from 'src/share/services/content.services';
 import { ViewUserContentDto } from '../content/dto/view-user-content.dto';
 import { Request } from 'express';
 import { UserDetailDto } from './dto/user-detail.dto';
+import { EditUserDto } from './dto/edit-user.dto';
 
 @Controller('users')
 export class UserController {
@@ -56,8 +57,31 @@ export class UserController {
     @Put('')
     @UsePipes(new ValidationPipe())
     @UseGuards(AuthGuard('bearer'))
-    async editUser() {
-
+    async editUser(
+        @Req() req: Request,
+        @Body() editUser: EditUserDto
+    ) {
+        try {
+            let token = req.headers.authorization.split(' ')[1];
+            let dataUser: any = await this.accountSvc.checkToken(token);
+            if(dataUser.isAuthorization) {
+                let dataEdit = await this.userSvc.editUser(editUser , dataUser.data.username);
+                return {
+                    status: HttpStatus.OK , 
+                    data: dataEdit
+                }
+            } else {
+                return {
+                    status: HttpStatus.BAD_REQUEST,
+                    message: NOT_FOUND_ACCOUNT
+                };
+            }
+        } catch (error) {
+            return {
+                status: HttpStatus.BAD_REQUEST,
+                message: error
+            }
+        }
     }
 
     @Get('/:username')
