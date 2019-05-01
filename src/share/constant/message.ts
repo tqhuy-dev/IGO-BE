@@ -6,3 +6,5 @@ export const WRONG_COUNTRY = 'Not found country';
 export const CREATE_CONTENT_SUCCESS = 'Create content success';
 export const DELETE_CONTENT_SUCCESS = 'Delete content success';
 export const DELETE_CONTENT_FAIL = 'Delete content fail';
+export const ADD_FRIEND_SUCCESS = 'Add friend success';
+export const USERNAME_ALREADY_IN_LIST = 'This friend have been in list';

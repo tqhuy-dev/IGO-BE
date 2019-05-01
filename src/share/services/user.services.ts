@@ -7,6 +7,8 @@ import { UserCreateDto } from 'src/controller/user/dto/user-create.dto';
 import * as jwt from 'jsonwebtoken';
 import { SECRET_KEY } from './../constant/value';
 import { EditUserDto } from 'src/controller/user/dto/edit-user.dto';
+import { async } from 'rxjs/internal/scheduler/async';
+import { USERNAME_ALREADY_IN_LIST } from '../constant/message';
 @Injectable()
 export class UserService {
     constructor(
@@ -32,6 +34,44 @@ export class UserService {
             })
         })
     }
+
+    addFriends(usernameFriend: string , username: string) {
+        return new Promise( async (resolve , reject) =>{
+            let listFriends = []
+            await this.userModel.findOne({
+                username: username
+            } , (error , result) =>{
+                if(error) {
+                    reject(error);
+                } else {
+                    listFriends = result.friends;
+                    let index = listFriends.findIndex(o => o.username === usernameFriend);
+                    if(index >= 0) {
+                        reject(USERNAME_ALREADY_IN_LIST);
+                        return ;
+                    }
+                    listFriends.push({
+                        username: usernameFriend,
+                        createAt: new Date().getTime().toString()
+                    });
+                }
+            })
+
+            await this.userModel.findOneAndUpdate({
+                username: username
+            } , {
+                $set:{
+                    friends: listFriends
+                }
+            } , (error ,result) =>{
+                if(error) {
+                    reject(error);
+                } else {
+                    resolve(result);
+                }
+            })
+        })
+    }
     
     createUser(newUserDTO: UserCreateDto) {
         return new Promise((resolve , reject) =>{
@@ -45,7 +85,8 @@ export class UserService {
                 birthday: newUserDTO.birthday,
                 follow: 0,
                 metadata: null,
-                avatar: newUserDTO.avatar
+                avatar: newUserDTO.avatar,
+                friends:[]
             })
 
             resolve(newUser.save())

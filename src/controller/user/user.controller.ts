@@ -5,13 +5,14 @@ import { UserCreateDto } from './dto/user-create.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { async } from 'rxjs/internal/scheduler/async';
 import { LoginDto } from './dto/login.dto';
-import { NOT_FOUND_ACCOUNT, ACCOUNT_EXIST } from './../../share/constant/message';
+import { NOT_FOUND_ACCOUNT, ACCOUNT_EXIST, ADD_FRIEND_SUCCESS } from './../../share/constant/message';
 import { AccountService } from 'src/share/services/account.services';
 import { ContentService } from 'src/share/services/content.services';
 import { ViewUserContentDto } from '../content/dto/view-user-content.dto';
 import { Request } from 'express';
 import { UserDetailDto } from './dto/user-detail.dto';
 import { EditUserDto } from './dto/edit-user.dto';
+import { AddFriendsDto } from './dto/add-friend.dto';
 
 @Controller('users')
 export class UserController {
@@ -52,6 +53,43 @@ export class UserController {
             data.push(dataElementContents);
         }
         return data;
+    }
+
+    @Post('friends')
+    @UseGuards(AuthGuard('bearer'))
+    @UsePipes(new ValidationPipe())
+    async addFriends(
+        @Req() req: Request,
+        @Body() addFriendDto: AddFriendsDto) {
+        try {
+            let dataFriend = await this.userSvc.retrieveUserDetail(addFriendDto.username);
+            if(dataFriend === null) {
+                return {
+                    status: HttpStatus.BAD_REQUEST,
+                    message: NOT_FOUND_ACCOUNT
+                };
+            }
+            let token = req.headers.authorization.split(' ')[1];
+            let dataAccount: any = await this.accountSvc.checkToken(token);
+            if(dataAccount.isAuthorization) {
+                let data = await this.userSvc.addFriends(addFriendDto.username , dataAccount.data.username);
+                return {
+                    status: HttpStatus.OK,
+                    data: data,
+                    message: ADD_FRIEND_SUCCESS
+                }
+            } else {
+                return {
+                    status: HttpStatus.BAD_REQUEST,
+                    message: NOT_FOUND_ACCOUNT
+                };
+            }
+        } catch (error) {
+            return {
+                status: HttpStatus.BAD_REQUEST,
+                message: error
+            };
+        }
     }
 
     @Put('')

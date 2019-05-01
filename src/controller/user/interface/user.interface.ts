@@ -10,4 +10,5 @@ export interface User {
     follow: number;
     metadata: any;
     avatar: string;
+    friends:[];
 }

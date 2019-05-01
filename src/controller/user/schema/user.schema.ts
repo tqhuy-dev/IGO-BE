@@ -9,5 +9,6 @@ export const UserSchema = mongoose.Schema({
     birthday: String,
     follow: Number,
     metadata: mongoose.Schema.Types.Mixed,
-    avatar: String
+    avatar: String,
+    friends:[]
 });
