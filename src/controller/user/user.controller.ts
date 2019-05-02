@@ -55,6 +55,26 @@ export class UserController {
         return data;
     }
 
+    @Get('friends/:username')
+    @UseGuards(AuthGuard('bearer'))
+    @UsePipes(new ValidationPipe())
+    async checkFriend(
+        @Param() param: UserDetailDto
+    ) {
+        try {
+            let dataFriend: any = await this.userSvc.retrieveUserDetail(param.username);
+            return {
+                status: HttpStatus.OK,
+                friends: dataFriend.friends
+            }
+        } catch (error) {
+            return {
+                status: HttpStatus.BAD_REQUEST,
+                message: NOT_FOUND_ACCOUNT
+            };
+        }
+    }
+
     @Post('friends')
     @UseGuards(AuthGuard('bearer'))
     @UsePipes(new ValidationPipe())
