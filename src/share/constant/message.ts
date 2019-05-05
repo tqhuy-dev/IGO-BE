@@ -8,3 +8,6 @@ export const DELETE_CONTENT_SUCCESS = 'Delete content success';
 export const DELETE_CONTENT_FAIL = 'Delete content fail';
 export const ADD_FRIEND_SUCCESS = 'Add friend success';
 export const USERNAME_ALREADY_IN_LIST = 'This friend have been in list';
+export const REACTING_SUCCESS = 'Reacting success';
+export const REACTING_WRONG_TYPE = 'Wrong type reaction';
+export const REACTION_DUPLICATE = 'This content has been reaction';

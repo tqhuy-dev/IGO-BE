@@ -9,8 +9,10 @@ export const ContentSchema = mongoose.Schema({
     },
     tag:[],
     reaction:{
-        like: Number,
-        love: Number,
+        like: [],
+        love: [],
+        comments:[],
+        share:[]
     },
     comments:[],
     rate: Number,

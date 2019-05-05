@@ -17,3 +17,8 @@ export const TRAVEL_MOVEMENT = [
     { name: 'Train'},
     { name: 'Boat'}
 ]
+
+export const REACTION_TYPE = [
+    { name: 'Like'},
+    { name: 'Love'},
+]

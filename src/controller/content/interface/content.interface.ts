@@ -13,10 +13,10 @@ export interface Content {
     },
     tag:[],
     reaction:{
-        like: number,
-        love: number,
-        comments: number,
-        share: number
+        like: [],
+        love: [],
+        comments: [],
+        share: []
     },
     comments:[],
     rate: number,

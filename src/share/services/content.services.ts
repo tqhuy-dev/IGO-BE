@@ -5,20 +5,23 @@ import { Content } from './../../controller/content/interface/content.interface'
 import { CreateContentDto } from 'src/controller/content/dto/create-content.dto';
 import { User } from 'src/controller/user/interface/user.interface';
 import { async } from 'rxjs/internal/scheduler/async';
+import { ReactionContentDto } from 'src/controller/content/dto/reaction-content.dto';
+import { REACTION_TYPE } from './../constant/value';
+import { REACTION_DUPLICATE } from './../constant/message';
 
 @Injectable()
 export class ContentService {
     constructor(
         @InjectModel('Content') private readonly contentModel: Model<Content>,
         @InjectModel('User') private readonly userModel: Model<User>,
-    ) {}
+    ) { }
 
     retrieveContentDetail(idContent: string) {
-        return new Promise((resolve , reject) =>{
+        return new Promise((resolve, reject) => {
             this.contentModel.findOne({
                 _id: idContent
-            } , (error , result) =>{
-                if(error) {
+            }, (error, result) => {
+                if (error) {
                     reject(error);
                 } else {
                     resolve(result);
@@ -28,11 +31,11 @@ export class ContentService {
     }
 
     retrieveUserContents(username: string) {
-        return new Promise((resolve , reject) =>{
+        return new Promise((resolve, reject) => {
             this.contentModel.find({
                 username: username
-            } , (error , result) =>{
-                if(error) {
+            }, (error, result) => {
+                if (error) {
                     reject(error);
                 } else {
                     resolve(result);
@@ -42,11 +45,11 @@ export class ContentService {
     }
 
     retrieveAllContents() {
-        return new Promise((resolve , reject) =>{
+        return new Promise((resolve, reject) => {
             this.contentModel.find({
 
-            } , (error , result) =>{
-                if(error) {
+            }, (error, result) => {
+                if (error) {
                     reject(error);
                 } else {
                     resolve(result);
@@ -56,9 +59,9 @@ export class ContentService {
     }
 
     createContent(createContentDto: CreateContentDto) {
-        return new Promise(async (resolve , reject) =>{
+        return new Promise(async (resolve, reject) => {
             let dataCheckin = [];
-            dataCheckin = createContentDto.location.checkin.map((element:any) =>{
+            dataCheckin = createContentDto.location.checkin.map((element: any) => {
                 return {
                     name: element.name,
                     address: element.address,
@@ -73,23 +76,23 @@ export class ContentService {
             const newContent = new this.contentModel({
                 username: createContentDto.username,
                 content: createContentDto.content,
-                location:{
+                location: {
                     name: createContentDto.location.name,
                     country: createContentDto.location.country,
                     checkin: dataCheckin
                 },
                 tag: createContentDto.tag,
-                reaction:{
-                    like:0,
-                    love:0,
-                    comments:0,
-                    share:0
+                reaction: {
+                    like: [],
+                    love: [],
+                    comments: [],
+                    share: []
                 },
                 comments: [],
                 rate: 0,
                 travel: createContentDto.travel,
                 type: createContentDto.type,
-                range:{
+                range: {
                     from: createContentDto.range.from,
                     to: createContentDto.range.to
                 },
@@ -103,17 +106,17 @@ export class ContentService {
             resolve(newContent.save())
         })
     }
-    
-    checkContentOfUser(idContent: string , username: string) {
-        return new  Promise((resolve , reject) =>{
+
+    checkContentOfUser(idContent: string, username: string) {
+        return new Promise((resolve, reject) => {
             this.contentModel.find({
                 username: username
-            } , (error , result) =>{
-                if(error) {
+            }, (error, result) => {
+                if (error) {
                     reject(error);
-                }else {
+                } else {
                     let index = result.findIndex(o => o._id.toString() === idContent);
-                    if(index === -1) {
+                    if (index === -1) {
                         resolve(false);
                     } else {
                         resolve(true);
@@ -124,14 +127,62 @@ export class ContentService {
     }
 
     deleteContent(idContent: string) {
-        return new Promise((resolve , reject)=>{
+        return new Promise((resolve, reject) => {
             this.contentModel.remove({
                 _id: idContent
-            } , (error ,  result)=>{
-                if(error) {
+            }, (error, result) => {
+                if (error) {
                     reject(error);
                 } else {
                     resolve(result);
+                }
+            })
+        })
+    }
+
+    updateReaction(reactionDTO: ReactionContentDto, dataUser: any) {
+        return new Promise(async (resolve, reject) => {
+
+            this.contentModel.findOne({
+                _id: reactionDTO.id_content
+            }, (error, result) => {
+                if (error) {
+                    reject(error);
+                } else {
+                    let dataReaction = result.reaction;
+                    let reaction = {
+                        username: dataUser.username,
+                        avatar: dataUser.avatar,
+                        name: dataUser.first_name + ' ' + dataUser.last_name,
+                        reactionAt: new Date().getTime(),
+                    };
+                    let dataTypeReaction = reactionDTO.type === 'Like' ? dataReaction.like : dataReaction.love;
+                    let index = dataTypeReaction.findIndex(o => o.username === reactionDTO.username);
+                    if (index !== -1) {
+                        reject(REACTION_DUPLICATE)
+                        return;
+                    }
+                    if (reactionDTO.type === 'Like') {
+                        dataReaction.like.push(reaction)
+                    } else if (reactionDTO.type === 'Love') {
+                        dataReaction.love.push(reaction)
+                    }
+                    this.contentModel.findOneAndUpdate({
+                        _id: reactionDTO.id_content
+                    }, {
+                            $set: {
+                                reaction: dataReaction
+                            }
+                        }, (error, result) => {
+                            if (error) {
+                                reject(error);
+                            } else {
+                                resolve({
+                                    isSuccess: true,
+                                    data: result
+                                });
+                            }
+                        })
                 }
             })
         })

@@ -15,7 +15,7 @@ export class UserService {
         @InjectModel('User') private readonly userModel: Model<User>
     ) {}
 
-    retrieveUserDetail(id: string) {
+    retrieveUserDetail(username: string) {
         return new Promise((resolve , reject) =>{
             let projection = {
                 password: false,
@@ -24,7 +24,7 @@ export class UserService {
             };
 
             this.userModel.findOne({
-                username: id
+                username: username
             } , projection , (error , result) =>{
                 if(error) {
                     reject(error);

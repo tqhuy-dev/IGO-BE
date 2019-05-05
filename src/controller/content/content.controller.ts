@@ -1,16 +1,18 @@
-import { Controller, Get, Post, Body, HttpStatus, UseGuards, Param, UsePipes, Delete, Req } from '@nestjs/common';
+import { Controller, Get, Post, Body, HttpStatus, UseGuards, Param, UsePipes, Delete, Req, Put } from '@nestjs/common';
 import { ContentService } from 'src/share/services/content.services';
 import { async } from 'rxjs/internal/scheduler/async';
 import { CreateContentDto } from './dto/create-content.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { ContentBusiness } from './business/content-business';
-import { WRONG_TYPE_VACATION, CREATE_CONTENT_SUCCESS, DELETE_CONTENT_SUCCESS, DELETE_CONTENT_FAIL } from './../../share/constant/message';
+import { WRONG_TYPE_VACATION, CREATE_CONTENT_SUCCESS, DELETE_CONTENT_SUCCESS, DELETE_CONTENT_FAIL, REACTING_SUCCESS, REACTING_WRONG_TYPE } from './../../share/constant/message';
 import { ViewUserContentDto } from './dto/view-user-content.dto';
 import { ViewContentDto } from './dto/view-content.dto';
 import { ValidationPipe } from './../../share/pipe/validation.pipe';
 import { Request } from 'express';
 import { AccountService } from 'src/share/services/account.services';
 import { UserService } from 'src/share/services/user.services';
+import { ReactionContentDto } from './dto/reaction-content.dto';
+import { REACTION_TYPE } from 'src/share/constant/value';
 @Controller('contents')
 export class ContentsController {
     constructor(
@@ -23,8 +25,9 @@ export class ContentsController {
     async getDataUserFromContent() {
         let data = [];
         let dataContents: any = await this.content.retrieveAllContents();
-        for (let i = 0 ; i < dataContents.length ; i ++) {
+        for (let i = 0; i < dataContents.length; i++) {
             let dataElementContents = {
+                id: dataContents[i]._id,
                 location: dataContents[i].location,
                 reaction: dataContents[i].reaction,
                 tag: dataContents[i].tag,
@@ -42,7 +45,7 @@ export class ContentsController {
                 createAt: dataContents[i].createAt,
                 user_data: {}
             };
-            let dataUser: any = await  this.userSvc.retrieveUserDetail(dataContents[i].username);
+            let dataUser: any = await this.userSvc.retrieveUserDetail(dataContents[i].username);
             dataElementContents.user_data = {
                 username: dataUser.username,
                 name: dataUser.first_name + ' ' + dataUser.last_name,
@@ -51,6 +54,38 @@ export class ContentsController {
             data.push(dataElementContents);
         }
         return data;
+    }
+
+    @Put('/reaction')
+    @UsePipes(new ValidationPipe())
+    @UseGuards(AuthGuard('bearer'))
+    async reactingContent(
+        @Body() reactionDto: ReactionContentDto
+    ) {
+        try {
+            let ReactionType = [
+                ...REACTION_TYPE
+            ];
+            let index = ReactionType.findIndex(o => o.name === reactionDto.type);
+            if(index === -1) {
+                return {
+                    status: HttpStatus.BAD_REQUEST,
+                    message: REACTING_WRONG_TYPE
+                }
+            }
+            let datauser = await this.userSvc.retrieveUserDetail(reactionDto.username);
+            let data = await this.content.updateReaction(reactionDto , datauser);
+            return {
+                status: HttpStatus.OK,
+                message: REACTING_SUCCESS,
+                data: data
+            }
+        } catch (error) {
+            return {
+                status: HttpStatus.BAD_REQUEST,
+                message: error
+            }
+        }
     }
 
 

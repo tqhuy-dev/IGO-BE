@@ -27,6 +27,7 @@ export class UserController {
         let dataContents: any = await this.contentSvc.retrieveUserContents(username);
         for (let i = 0 ; i < dataContents.length ; i ++) {
             let dataElementContents = {
+                id: dataContents[i]._id,
                 location: dataContents[i].location,
                 reaction: dataContents[i].reaction,
                 tag: dataContents[i].tag,
