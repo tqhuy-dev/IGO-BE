@@ -21,4 +21,6 @@ export const TRAVEL_MOVEMENT = [
 export const REACTION_TYPE = [
     { name: 'Like'},
     { name: 'Love'},
+    { name: 'Unlike'},
+    { name: 'Unlove'}
 ]

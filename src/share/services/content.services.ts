@@ -156,16 +156,26 @@ export class ContentService {
                         name: dataUser.first_name + ' ' + dataUser.last_name,
                         reactionAt: new Date().getTime(),
                     };
-                    let dataTypeReaction = reactionDTO.type === 'Like' ? dataReaction.like : dataReaction.love;
-                    let index = dataTypeReaction.findIndex(o => o.username === reactionDTO.username);
-                    if (index !== -1) {
-                        reject(REACTION_DUPLICATE)
-                        return;
+                    let dataTypeReaction = reactionDTO.type === 'Like' || reactionDTO.type === 'Unlike'?
+                    dataReaction.like : dataReaction.love;
+                    if(reactionDTO.type === 'like' || reactionDTO.type === 'love') {
+                        let index = dataTypeReaction.findIndex(o => o.username === reactionDTO.username);
+                        if (index !== -1) {
+                            reject(REACTION_DUPLICATE)
+                            return;
+                        }
                     }
+
                     if (reactionDTO.type === 'Like') {
                         dataReaction.like.push(reaction)
                     } else if (reactionDTO.type === 'Love') {
                         dataReaction.love.push(reaction)
+                    } else if( reactionDTO.type === 'Unlike') {
+                        let indexListReaction = dataReaction.like.findIndex( o => o.username === reactionDTO.username);
+                        dataReaction.like.splice(indexListReaction , 1);
+                    } else if( reactionDTO.type === 'Unlove') {
+                        let indexListReaction = dataReaction.love.findIndex( o => o.username === reactionDTO.username);
+                        dataReaction.love.splice(indexListReaction , 1);
                     }
                     this.contentModel.findOneAndUpdate({
                         _id: reactionDTO.id_content

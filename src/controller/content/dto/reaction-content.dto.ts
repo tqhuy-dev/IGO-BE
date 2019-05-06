@@ -9,4 +9,5 @@ export class ReactionContentDto {
 
     @IsString()
     id_content: string;
+
 }

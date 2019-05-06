@@ -43,7 +43,11 @@ export class ContentsController {
                 total_price: dataContents[i].total_price,
                 metadata: dataContents[i].metadata,
                 createAt: dataContents[i].createAt,
-                user_data: {}
+                user_data: {},
+                reaction_state:{
+                    like: false,
+                    love: false
+                }
             };
             let dataUser: any = await this.userSvc.retrieveUserDetail(dataContents[i].username);
             dataElementContents.user_data = {
