@@ -35,7 +35,7 @@ export class UserService {
         })
     }
 
-    addFriends(usernameFriend: string , username: string) {
+    addFriends(dataUserFriend: any , username: string) {
         return new Promise( async (resolve , reject) =>{
             let listFriends = []
             await this.userModel.findOne({
@@ -45,13 +45,15 @@ export class UserService {
                     reject(error);
                 } else {
                     listFriends = result.friends;
-                    let index = listFriends.findIndex(o => o.username === usernameFriend);
+                    let index = listFriends.findIndex(o => o.username === dataUserFriend.username);
                     if(index >= 0) {
                         reject(USERNAME_ALREADY_IN_LIST);
                         return ;
                     }
                     listFriends.push({
-                        username: usernameFriend,
+                        username: dataUserFriend.username,
+                        name: dataUserFriend.first_name + ' ' + dataUserFriend.last_name,
+                        avatar: dataUserFriend.avatar,
                         createAt: new Date().getTime().toString()
                     });
                 }

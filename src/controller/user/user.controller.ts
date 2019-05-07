@@ -93,7 +93,7 @@ export class UserController {
             let token = req.headers.authorization.split(' ')[1];
             let dataAccount: any = await this.accountSvc.checkToken(token);
             if(dataAccount.isAuthorization) {
-                let data = await this.userSvc.addFriends(addFriendDto.username , dataAccount.data.username);
+                let data = await this.userSvc.addFriends(dataFriend , dataAccount.data.username);
                 return {
                     status: HttpStatus.OK,
                     data: data,
