@@ -210,6 +210,12 @@ export class ContentService {
                             return element.location.name === filter.city
                         })
                     }
+                    if(filter.location) {
+                        dataFilter = dataFilter.filter((element) =>{
+                            let index = element.location.checkin.findIndex(o => o.name === filter.location);
+                            return index !== -1;
+                        })
+                    }
                     resolve(dataFilter);
                 }
             })
