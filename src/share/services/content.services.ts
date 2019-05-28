@@ -197,4 +197,22 @@ export class ContentService {
             })
         })
     }
+
+    retrieveContentsFilter(filter: any) {
+        return new Promise((resolve , reject) =>{
+            this.contentModel.find({} , (error , result) =>{
+                if(error) {
+                    reject(error);
+                } else {
+                    let dataFilter = result;
+                    if(filter.city) {
+                        dataFilter = dataFilter.filter((element) =>{
+                            return element.location.name === filter.city
+                        })
+                    }
+                    resolve(dataFilter);
+                }
+            })
+        })
+    }
 }

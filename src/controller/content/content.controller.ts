@@ -111,6 +111,25 @@ export class ContentsController {
         }
     }
 
+    @Get('/filter')
+    @UseGuards(AuthGuard('bearer'))
+    async retrieveContentsByCity(
+        @Req() req: Request
+    ) {
+        try {
+            let data = await this.content.retrieveContentsFilter(req.query);
+            return {
+                status: HttpStatus.OK,
+                data: data
+            }
+        } catch (error) {
+            return {
+                status: HttpStatus.BAD_REQUEST,
+                message: error
+            }
+        }
+    }
+
     @Get('/:contentID')
     @UsePipes(new ValidationPipe())
     @UseGuards(AuthGuard('bearer'))
