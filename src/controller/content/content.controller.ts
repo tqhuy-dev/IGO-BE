@@ -117,7 +117,19 @@ export class ContentsController {
         @Req() req: Request
     ) {
         try {
-            let data = await this.content.retrieveContentsFilter(req.query);
+            let filter = req.query;
+            let data = await this.getDataUserFromContent();
+            if(filter.city) {
+                data = data.filter((element) =>{
+                    return element.location.name === filter.city
+                })
+            }
+            if(filter.location) {
+                data = data.filter((element) =>{
+                    let index = element.location.checkin.findIndex(o => o.name === filter.location);
+                    return index !== -1;
+                })
+            }
             return {
                 status: HttpStatus.OK,
                 data: data
